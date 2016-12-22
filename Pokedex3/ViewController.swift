@@ -134,6 +134,21 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
 //will do something when you tap on cell
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+   
+        var poke: Pokemon!
+        
+        if inSearchMode {
+            
+            poke = filteredPokemon[indexPath.row]
+            
+        } else {
+            
+            poke = pokemon[indexPath.row]
+            
+        }
+        
+        performSegue(withIdentifier: "PokemonDetailVC", sender: poke)
+        
         
     }
     
@@ -200,6 +215,19 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             
         }
         
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "PokemonDetailVC" {
+            
+            if let detailsVC = segue.destination as? PokemonDetailVC {
+                if let poke = sender as? Pokemon {
+                    
+                   detailsVC.pokemon = poke
+                }
+            }
+            
+        }
     }
     
     
