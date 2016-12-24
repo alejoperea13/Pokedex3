@@ -61,11 +61,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     
     
-    
-    
-    
-    
-    
     //parse the pokemon csv.swift data and put into a form
     
     func parsePokemonCSV(){

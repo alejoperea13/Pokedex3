@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Alamofire
 
 class Pokemon {
     
@@ -18,10 +19,95 @@ class Pokemon {
     private var _height: String!
     private var _weight: String!
     private var _attack: String!
-    private var _evoNextEvolutionTxt: String!
+    private var _nextEvolutionTxt: String!
+    private var _pokemonURL: String!
+   
+    
+    var description: String {
+        
+        if _description == nil {
+            
+            _description = ""
+            
+        }
+        return _description
+        
+    }
+    
+    
+    var defense: String {
+        
+        if _defense == nil {
+            
+            _defense = ""
+            
+        }
+        
+        return _defense
+    
+    }
+    
+    
+    var type: String {
+        
+        if _type == nil {
+            
+            _type = ""
+            
+        }
+        
+        return _type
+        
+    }
+    
+    
+    var height: String {
+        
+       if  _height == nil {
+        
+        _height = ""
+        
+        }
+        return _height
+    }
+    
+    
+    var weight: String {
+        
+        if _weight == nil {
+    
+            _weight = ""
+        }
+        
+        return _weight
+        
+    }
     
     
     
+    var attack: String {
+        
+        if _attack == nil {
+            
+            _attack = ""
+            
+        }
+        
+        return _attack
+
+    }
+    
+    
+    
+    var nextEvolutionText: String {
+        
+        if _nextEvolutionTxt == nil {
+            
+            _nextEvolutionTxt = ""
+            
+        }
+        return _nextEvolutionTxt
+    }
     
     
     var name: String {
@@ -41,8 +127,86 @@ class Pokemon {
         self._name = name
         self._pokedexId = pokedexId
         
+        self._pokemonURL = "http://pokeapi.co/api/v1/pokemon/\(pokedexId)"
+        
     }
     
-    
+    func downloadPokemonDetail(completed: @escaping DownloadComplete) {
+        
+      
+        
+        Alamofire.request(_pokemonURL).responseJSON { (response) in
+             print("estaaaaaaa es la respuestaaaaa\(response.result.value)")
+       
+            
+           if let dict = response.result.value as? Dictionary<String, AnyObject> {
+            
+          
+            
+                if let weight = dict["weight"] as? String {
+                      print("entreeeeeeeeeee aquiiiiiiiiiiiii")
+                    self._weight = weight
+                    
+                }
+                if let height = dict["height"] as? String {
+                    
+                    self._height = height
+                    
+                }
+                
+                if let attack = dict["attack"] as? Int {
+                    
+                    self._attack = "\(attack)"
+                    
+                }
+            
+            if let defense = dict["defense"] as? Int {
+                
+                self._defense = "\(defense)"
+                
+            }
+       
+         
+            print("Este es el peso\(self._weight)")
+            print(self._attack)
+            print(self._defense)
+            print(self._height)
+            
+            if let types = dict["types"] as? [Dictionary<String, String>], types.count>0 {
+                
+                if let name = types[0]["name"] {
+                    self._type = name.capitalized
+                }
+                
+                if types.count>1 {
+                    
+                    for x in 1..<types.count {
+                        
+                        if let name = types[x]["name"]{
+                            
+                            self._type! += "/\(name.capitalized)"
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+                print(self._type)
+                
+            }else {
+                
+                self._type = ""
+                
+            }
+                
+            }
+            
+            completed()
+            
+        }
+        
+        
+    }
     
 }
